@@ -2,6 +2,11 @@
   <img src="images/hashira_cactus.png" width="300" height="300">
 </p>
 
+``` shell
+ poetry config virtualenvs.in-project true
+ poetry config --list
+```
+
 # HASHIRA: Sensei virtual de documentación
 
 ## **Descripción**
