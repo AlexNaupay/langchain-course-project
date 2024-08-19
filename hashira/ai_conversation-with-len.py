@@ -13,22 +13,13 @@ recreate_chroma_db = False
 chat_type = "memory_chat"
 
 
-def load_documents_and_split(file_path: str):
+def load_documents(file_path: str):
     loader = DocsJSONLLoader(file_path)
     data = loader.load()
-    print(f"Documents loaded: {len(data)}")
 
-    # Split by tokens
-    text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-        model_name="gpt-4",
-        chunk_size=500,
-        chunk_overlap=50,
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1600, length_function=len, chunk_overlap=160
     )
-
-    # Split by len
-    # text_splitter = RecursiveCharacterTextSplitter(
-    #     chunk_size=1600, length_function=len, chunk_overlap=160
-    # )
 
     return text_splitter.split_documents(data)
 
@@ -102,14 +93,8 @@ def process_memory_query(query, retriever, llm, chat_history):
 
 def main():
 
-    documents = load_documents_and_split(get_file_path())
-    print(f"Documents split: {len(documents)}")
-    # print(documents[0])
-    documents_firsts = documents[:50]
-    print(len(documents_firsts))
-
+    documents = load_documents(get_file_path())
     get_openai_api_key()
-
     embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
 
     vectorstore_chroma = get_chroma_db(embeddings, documents, "chroma_docs")
